@@ -146,19 +146,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Matrix4f.h" />
+    <ClInclude Include="src\Maths\Math.h" />
+    <ClInclude Include="src\Maths\Matrix4f.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Triangle.h" />
-    <ClInclude Include="src\Vector2f.h" />
-    <ClInclude Include="src\Vector3f.h" />
+    <ClInclude Include="src\Maths\Vector2f.h" />
+    <ClInclude Include="src\Maths\Vector3f.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Matrix4f.cpp" />
+    <ClCompile Include="src\Maths\Matrix4f.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
-    <ClCompile Include="src\Vector2f.cpp" />
-    <ClCompile Include="src\Vector3f.cpp" />
+    <ClCompile Include="src\Maths\Vector2f.cpp" />
+    <ClCompile Include="src\Maths\Vector3f.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

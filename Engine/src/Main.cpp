@@ -9,165 +9,131 @@
 #include <iostream>
 #include <sstream>
 
-#define VNAME(x) #x
-#define VDUMP(x) std::cout << #x << " " << x << std::endl
-
-class Matrix
+static const struct
 {
-public:
-	float** matrix;
-	unsigned int m_xy_cnt;
-	Matrix();
-	Matrix(unsigned int xy_cnt); //row col count
-	~Matrix();
-	Matrix operator*(const Matrix m);
-	void initMatrix();
-	unsigned int getSize();
-	void operator=(const Matrix m);
-	std::string toString();
-private:
-
+	float x, y;
+	float r, g, b;
+} vertices[3] =
+{
+	{ -0.6f, -0.4f, 1.f, 0.f, 0.f },
+	{  0.6f, -0.4f, 0.f, 1.f, 0.f },
+	{   0.f,  0.6f, 0.f, 0.f, 1.f }
 };
-
-Matrix::Matrix()
+static const char* vertex_shader_text =
+"uniform mat4 MVP;\n"
+"attribute vec3 vCol;\n"
+"attribute vec2 vPos;\n"
+"varying vec3 color;\n"
+"void main()\n"
+"{\n"
+"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+"    color = vCol;\n"
+"}\n";
+static const char* fragment_shader_text =
+"varying vec3 color;\n"
+"void main()\n"
+"{\n"
+"    gl_FragColor = vec4(color, 1.0);\n"
+"}\n";
+static void error_callback(int error, const char* description)
 {
-	//Init matrix 
-	m_xy_cnt = 4;
-
-	matrix = new float*[m_xy_cnt];
-	for (unsigned int i = 0; i < m_xy_cnt; i++) {
-		matrix[i] = new float[m_xy_cnt];
-	}
-	initMatrix();
+	fprintf(stderr, "Error: %s\n", description);
 }
-
-Matrix::Matrix(unsigned int xy_cnt) {
-	//Init matrix 
-	m_xy_cnt = xy_cnt;
-
-	matrix = new float*[m_xy_cnt];
-	for (unsigned int i = 0; i < m_xy_cnt; i++) {
-		matrix[i] = new float[m_xy_cnt];
-	}
-	initMatrix();
-}
-Matrix::~Matrix()
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
-
-Matrix Matrix::operator*(const Matrix m) {
-	Matrix result = Matrix(m_xy_cnt);
-
-	for (unsigned int i = 0; i < m_xy_cnt; i++)
+int main(void)
+{
+	GLFWwindow* window;
+	GLuint vertex_buffer, vertex_shader, fragment_shader, program;
+	GLint mvp_location, vpos_location, vcol_location;
+	glfwSetErrorCallback(error_callback);
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+	if (!window)
 	{
-		for (unsigned int j = 0; j < m_xy_cnt; j++)
-		{
-			for (unsigned int k = 0; k < m_xy_cnt; k++)
-			{
-				result.matrix[i][j] += this->matrix[i][k] * m.matrix[k][j];
-			}
-		}
+		glfwTerminate();
+		exit(EXIT_FAILURE);
 	}
-	return result;
-}
 
-void Matrix::initMatrix() {
-	for (unsigned int i = 0; i < m_xy_cnt; i++) {
-		for (unsigned int j = 0; j < m_xy_cnt; j++)
-		{
-			matrix[i][j] = 0;
-		}
+	glewExperimental = GL_TRUE;
+
+	glfwSetKeyCallback(window, key_callback);
+	glfwMakeContextCurrent(window);
+
+	//glewInit();
+	if (glewInit()) {
+		std::cout << "Unable to initialize GLEW ... exiting" << std::endl;
+		exit(EXIT_FAILURE);
 	}
-}
+	else {
+		std::cout << "GLEW initialized correct..." << std::endl;
+	}
 
-unsigned int Matrix::getSize() {
-	return this->m_xy_cnt;
-}
-
-void Matrix::operator=(const Matrix m) {
-	for (unsigned int i = 0; i < m_xy_cnt; i++)
+	if (glewIsSupported("GL_VERSION_4_3"))
 	{
-		for (unsigned int j = 0; j < m_xy_cnt; j++)
-		{
-			this->matrix[i][j] = m.matrix[i][j];
-		}
+		std::cout << "GLEW Version is 4.3\n";
 	}
-}
-
-std::string Matrix::toString() {
-	std::stringstream ss;
-	for (unsigned int i = 0; i < m_xy_cnt; i++)
+	else
 	{
-		for (unsigned int j = 0; j < m_xy_cnt; j++)
-		{
-			ss << this->matrix[i][j] << " ";
-		}
-		ss << "\n";
+		std::cout << "GLEW 4.3 not supported\n";
 	}
 
-	return ss.str();
-}
 
-
-int main() {
-	int Testvariable = 100;
-	std::cout << VNAME(Testvariable) << " " << Testvariable << std::endl;
-
-	VDUMP(Testvariable);
-
-	Matrix* m = new Matrix();
-
-	/*Matrix erg = Matrix(2);
-	Matrix a = Matrix(2);
-	Matrix b = Matrix(2);
-
-	a.matrix[0][0] = 1;
-	a.matrix[0][1] = -3;
-	a.matrix[1][0] = 0;
-	a.matrix[1][1] = -2;
-
-	b.matrix[0][0] = -1;
-	b.matrix[0][1] = 4;
-	b.matrix[1][0] = 7;
-	b.matrix[1][1] = 1;*/
-
-	Matrix erg = Matrix(3);
-	Matrix a = Matrix(3);
-	Matrix b = Matrix(3);
-
-	a.matrix[0][0] = 5;
-	a.matrix[0][1] = -3;
-	a.matrix[0][2] = 11;
-
-	a.matrix[1][0] = 5;
-	a.matrix[1][1] = 6;
-	a.matrix[1][2] = 22;
-
-	a.matrix[2][0] = 8;
-	a.matrix[2][1] = 19;
-	a.matrix[2][2] = 0;
-
-	b.matrix[0][0] = 12;
-	b.matrix[0][1] = 3;
-	b.matrix[0][2] = -4;
-
-	b.matrix[1][0] = 5;
-	b.matrix[1][1] = 16;
-	b.matrix[1][2] = 9;
-
-	b.matrix[2][0] = 8;
-	b.matrix[2][1] = -3;
-	b.matrix[2][2] = 4;
-
-	std::cout << a.toString() << "\n\n" << b.toString() << std::endl;
-
-	erg = a * b;
-
-	std::cout << "Ergebnis: \n" << erg.toString() << std::endl;
-
-	std::cout << m->getSize()*m->getSize() << std::endl;
-
-
-	system("Pause");
-	return 0;
+	//gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	glfwSwapInterval(1);
+	// NOTE: OpenGL error checks have been omitted for brevity
+	glGenBuffers(1, &vertex_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
+	glCompileShader(vertex_shader);
+	fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+	glCompileShader(fragment_shader);
+	program = glCreateProgram();
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+	mvp_location = glGetUniformLocation(program, "MVP");
+	vpos_location = glGetAttribLocation(program, "vPos");
+	vcol_location = glGetAttribLocation(program, "vCol");
+	glEnableVertexAttribArray(vpos_location);
+	glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+		sizeof(float) * 5, (void*)0);
+	glEnableVertexAttribArray(vcol_location);
+	glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
+		sizeof(float) * 5, (void*)(sizeof(float) * 2));
+	while (!glfwWindowShouldClose(window))
+	{
+		float ratio;
+		int width, height;
+		Matrix4f m, p, mvp; //mat4x4 m, p, mvp;
+		glfwGetFramebufferSize(window, &width, &height);
+		ratio = width / (float)height;
+		glViewport(0, 0, width, height);
+		glClear(GL_COLOR_BUFFER_BIT);
+		m.loadIdentity(); // mat4x4_identity(m);
+		std::cout << m.toString() << std::endl;
+		m.rotateZ((float)glfwGetTime());//mat4x4_rotate_Z(m, m, (float)glfwGetTime());
+		std::cout << m.toString() << std::endl;
+		p.setOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f); //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+		std::cout << p.toString() << std::endl;
+		mvp = p * m; //mat4x4_mul(mvp, p, m);
+		std::cout << mvp.toString() << std::endl;
+		glUseProgram(program);
+		glUniformMatrix4fv(mvp_location, 1, GL_FALSE, mvp.toGl());
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	//exit(EXIT_SUCCESS);
 }

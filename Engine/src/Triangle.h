@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector3f.h"
+#include "Maths/Math.h"
 #include <sstream>
 
 class Triangle
