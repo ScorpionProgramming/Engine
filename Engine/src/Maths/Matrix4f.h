@@ -5,7 +5,7 @@
 class Matrix4f
 {
 public:
-	float** matrix;
+	float* matrix;
 	unsigned int m_xy_cnt = 4;
 
 	Matrix4f();
@@ -17,7 +17,7 @@ public:
 		float c0, float c1, float c2, float c3,
 		float d0, float d1, float d2, float d3);
 
-	void initMatrix();
+	//void initMatrix();
 
 	void loadIdentity();
 	void scale(float x, float y, float z);

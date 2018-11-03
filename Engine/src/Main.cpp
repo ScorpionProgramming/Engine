@@ -74,6 +74,42 @@ int main()
 		std::cout << "GLEW 4.3 not supported\n";
 	}
 
+	//---------------------Mathtest-------------------------------------------------
+	Matrix4f a; 
+
+	a.matrix[0] = 5;
+	a.matrix[1] = -3;
+	a.matrix[2] = 11;
+	a.matrix[3] = 7;
+
+	a.matrix[4] = 5;
+	a.matrix[5] = 6;
+	a.matrix[6] = 22;
+	a.matrix[7] = 1;
+
+	a.matrix[8] = 8;
+	a.matrix[9] = 19;
+	a.matrix[10] = 0;
+	a.matrix[11] = 5;
+
+	a.matrix[12] = 8;
+	a.matrix[13] = 19;
+	a.matrix[14] = 0;
+	a.matrix[15] = -2;
+
+	const float* mat = a.toGl();
+	for (unsigned int i = 0; i < 16; i++) {
+		std::cout << mat[i] << " ";
+		if (i % 4 == 3) {
+			std::cout << std::endl;
+		}
+	}
+
+	std::cout << "\n" << a.toString() << std::endl;
+
+	//------------------------------------------------------------------------------
+
+
 
 
 	// build and compile our shader program

@@ -24,13 +24,13 @@
     <ClInclude Include="src\Maths\Vector3f.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Maths\Matrix4f.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\Triangle.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Maths\Math.h">
+    <ClInclude Include="src\Maths\Maths.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Maths\Matrix4f.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClCompile Include="src\Maths\Vector3f.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Maths\Matrix4f.cpp">
+    <ClCompile Include="src\Triangle.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Triangle.cpp">
+    <ClCompile Include="src\Maths\Matrix4f.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
